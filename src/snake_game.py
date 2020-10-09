@@ -7,7 +7,8 @@ class Screen:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.display = pygame.display.set_mode((self.width, self.height))
+        self.display = pygame.display
+        self.screen = self.display.set_mode((self.width, self.height))
 
         pygame.display.set_caption('Snake')
 
@@ -35,9 +36,9 @@ class Snake:
     def grow(self):
         self.snake_body.append((self.x, self.y))
 
-    def draw(self, display):
+    def draw(self, screen):
         for x in self.snake_body:
-            pygame.draw.rect(display, c.SNAKE_COLOUR, [x[0], x[1], c.BLOCK, c.BLOCK])
+            pygame.draw.rect(screen, c.SNAKE_COLOUR, [x[0], x[1], c.BLOCK, c.BLOCK])
 
 
 class Food:
@@ -58,7 +59,7 @@ def extract(lst, i):
 
 
 def random_excluding_values(_min, _max, excluded_values):
-    all_nums = {num for num in range(_min, _max - c.BLOCK, 10)}
+    all_nums = {num for num in range(_min, _max - c.BLOCK, c.BLOCK)}
     exclude_set = set(excluded_values)
     valid_choices = all_nums - exclude_set
 
@@ -96,8 +97,8 @@ class Game:
             self.snake.step()
 
     def draw_objects(self):
-        self.snake.draw(self.screen.display)
-        self.food.draw(self.screen.display)
+        self.snake.draw(self.screen.screen)
+        self.food.draw(self.screen.screen)
 
     def is_new_high_score(self):
         if self.score > self.high_score:
@@ -116,7 +117,7 @@ class Game:
             self.restart()
 
     def game_loop(self):
-        self.screen.display.fill(c.SCREEN_COLOUR)
+        self.screen.screen.fill(c.SCREEN_COLOUR)
         self.event_loop()
         self.snake.turn(self.latest_key)
         self.is_eaten()
